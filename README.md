@@ -91,3 +91,48 @@ This prototype shows OBD-Insight running alongside FORScan.
 Raw scan results are automatically organized into color-coded priorities, helping users quickly identify important faults, review historical scan data, and access additional diagnostic insights without manually researching every code.
 
 Each fault card can be expanded using **Add Details** to display additional diagnostic information, common causes, and vehicle-specific context. Users can also select **Ask AI** to ask follow-up questions about a specific fault using the current scan results and previously stored vehicle history as context.
+
+## What V1 Does
+
+* Reads `src/sample_scan.txt`
+* Extracts basic vehicle information when available
+* Detects FORScan-style DTC entries
+* Extracts module names and DTC codes
+* Classifies each DTC as Critical, Warning, or Informational
+* Prints a clean terminal summary
+
+
+## Run It
+
+```bash
+python src/main.py
+```
+
+## Example Output
+
+```text
+Vehicle:
+2012 Lincoln MKX TiVCT 3.7L
+VIN: 2LMDJ8JK0CBL00000
+
+Scan Summary:
+3 DTCs found
+0 Critical
+3 Warning
+0 Informational
+
+Results:
+WARNING       | BdyCM | B115E:55-0A
+WARNING       | DSM   | B2312-60
+WARNING       | DSM   | B2316-60
+```
+
+## Severity Rules
+
+V1 uses simple rules:
+
+* Critical: engine misfire, ABS/brake, airbag/SRS, transmission, or severe powertrain-related issues
+* Warning: body, driver seat, comfort, sensor, or other non-critical module codes
+* Informational: stored, historical, intermittent, previously cleared, or not-present codes
+
+Known starter codes live in `data/codes.json`.

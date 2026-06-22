@@ -1,0 +1,22 @@
+FORScan Diagnostic Report
+
+Vehicle: 2012 Lincoln MKX TiVCT 3.7L
+VIN: 2LMDJ8JK0CBL00000
+
+===BdyCM DTC B115E:55-0A===
+Code: B115E - Camera module signal issue
+Status:
+ - DTC Present at Time of Request
+Module: Body Control Module
+
+===DSM DTC B2312-60===
+Code: B2312 - Mirror horizontal position sensor
+Status:
+ - DTC Present at Time of Request
+Module: Driver Seat Module
+
+===DSM DTC B2316-60===
+Code: B2316 - Mirror vertical position sensor
+Status:
+ - DTC Present at Time of Request
+Module: Driver Seat Module

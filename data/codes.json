@@ -1,0 +1,18 @@
+{
+  "B115E:55-0A": {
+    "description": "Camera module signal issue",
+    "default_severity": "Warning"
+  },
+  "B2312-60": {
+    "description": "Mirror horizontal position sensor",
+    "default_severity": "Warning"
+  },
+  "B2316-60": {
+    "description": "Mirror vertical position sensor",
+    "default_severity": "Warning"
+  },
+  "P0301": {
+    "description": "Cylinder 1 misfire detected",
+    "default_severity": "Critical"
+  }
+}
