@@ -1,6 +1,6 @@
 # OBD-Insight
 
-OBD-Insight is a lightweight companion application for FORScan and OBD-II diagnostic tools.
+OBD-Insight is a lightweight companion application for FORScan.
 
 Vehicle scans often contain multiple fault codes spread across different modules. While FORScan provides detailed diagnostic data, identifying which issues need attention first can be time-consuming and overwhelming.
 
@@ -79,3 +79,15 @@ Stored, historical, intermittent, or low-priority codes that can be monitored ov
 OBD-Insight is not intended to replace professional diagnostic software.
 
 Its purpose is to make diagnostic information easier to understand, reduce time spent researching fault codes, and help users focus on the issues that matter most.
+
+## Prototype Preview
+
+
+<img width="1672" height="941" alt="Prototype" src="https://github.com/user-attachments/assets/c4be30f8-bf5a-4c85-98fe-88f5e84e3914" />
+
+
+This prototype shows OBD-Insight running alongside FORScan.
+
+Raw scan results are automatically organized into color-coded priorities, helping users quickly identify important faults, review historical scan data, and access additional diagnostic insights without manually researching every code.
+
+Each fault card can be expanded using **Add Details** to display additional diagnostic information, common causes, and vehicle-specific context. Users can also select **Ask AI** to ask follow-up questions about a specific fault using the current scan results and previously stored vehicle history as context.
