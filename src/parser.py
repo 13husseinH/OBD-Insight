@@ -5,29 +5,33 @@ import re
 
 DTC_PATTERN = re.compile(r"\b([BPCU][0-3][0-9A-F]{3}(?::[0-9A-F]{2})?(?:-[0-9A-F]{2})?)\b", re.IGNORECASE)
 HEADING_PATTERN = re.compile(r"^=+\s*([A-Za-z0-9]+)\s+DTC\s+(.+?)\s*=+$", re.IGNORECASE)
+DTC_LOG_PATTERN = re.compile(r"\bDTCs\s+in\s+([A-Za-z0-9_]+)\s*:\s*(.+)", re.IGNORECASE)
 MODULE_LINE_PATTERN = re.compile(r"^(?:Module\s*:\s*)?([A-Za-z][A-Za-z0-9]{1,8})\b.*?\b([BPCU][0-3][0-9A-F]{3}(?::[0-9A-F]{2})?(?:-[0-9A-F]{2})?)\b", re.IGNORECASE)
+TIMESTAMP_PATTERN = re.compile(r"^[^\[]*\[\d{2}:\d{2}:\d{2}\.\d{3}\]\s*")
 
 
 def parse_vehicle_info(text):
     """Extract basic vehicle details when they appear in the scan text."""
     info = {}
+    clean_text = "\n".join(_clean_log_line(line) for line in text.splitlines())
 
     label_patterns = {
         "year": r"\bYear\s*:\s*(.+)",
         "make": r"\bMake\s*:\s*(.+)",
         "model": r"\bModel\s*:\s*(.+)",
         "engine": r"\bEngine\s*:\s*(.+)",
-        "vin": r"\bVIN\s*:\s*([A-HJ-NPR-Z0-9]{11,17})",
+        "vin": r"\bVIN\s*:\s*([A-HJ-NPR-Z0-9*]{11,17})",
     }
 
     for key, pattern in label_patterns.items():
-        match = re.search(pattern, text, re.IGNORECASE)
+        match = re.search(pattern, clean_text, re.IGNORECASE)
         if match:
             info[key] = match.group(1).strip()
 
-    vehicle_match = re.search(r"\bVehicle\s*:\s*(.+)", text, re.IGNORECASE)
+    vehicle_match = re.search(r"\bVehicle\s*:\s*(.+)", clean_text, re.IGNORECASE)
     if vehicle_match:
-        info["vehicle"] = vehicle_match.group(1).strip()
+        vehicle = vehicle_match.group(1).strip()
+        info["vehicle"] = re.split(r",\s*VIN\s*:", vehicle, maxsplit=1, flags=re.IGNORECASE)[0].strip()
 
     return info
 
@@ -39,8 +43,16 @@ def parse_dtcs(text):
     current_module = None
 
     for raw_line in text.splitlines():
-        line = raw_line.strip()
+        line = _clean_log_line(raw_line)
         if not line:
+            continue
+
+        dtc_log_match = DTC_LOG_PATTERN.search(line)
+        if dtc_log_match:
+            module = dtc_log_match.group(1)
+            current_module = module
+            for code in DTC_PATTERN.findall(dtc_log_match.group(2)):
+                _add_dtc(dtcs, seen, module, code, line)
             continue
 
         heading_match = HEADING_PATTERN.match(line)
@@ -109,6 +121,11 @@ def _add_dtc(dtcs, seen, module, code, raw_line):
 
 def _code_base(code):
     return re.split(r"[:-]", code, maxsplit=1)[0]
+
+
+def _clean_log_line(line):
+    """Remove FORScan log timestamps and surrounding whitespace."""
+    return TIMESTAMP_PATTERN.sub("", line).strip()
 
 
 def _short_module_name(value):

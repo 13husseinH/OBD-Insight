@@ -1,22 +1,15 @@
-FORScan Diagnostic Report
-
-Vehicle: 2012 Lincoln MKX TiVCT 3.7L
-VIN: 2LMDJ8JK0CBL00000
-
-===BdyCM DTC B115E:55-0A===
-Code: B115E - Camera module signal issue
-Status:
- - DTC Present at Time of Request
-Module: Body Control Module
-
-===DSM DTC B2312-60===
-Code: B2312 - Mirror horizontal position sensor
-Status:
- - DTC Present at Time of Request
-Module: Driver Seat Module
-
-===DSM DTC B2316-60===
-Code: B2316 - Mirror vertical position sensor
-Status:
- - DTC Present at Time of Request
-Module: Driver Seat Module
+[13:50:39.135] Checking FTDI #1:D3C3XG6H...
+[13:50:55.816] Connection to adapter has been established: FTDI #1:D3C3XG6H
+[13:50:55.923] Connection to vehicle has been established
+[13:50:58.874] Vehicle: Lincoln MKX TiVCT 3.7L 2012 (2012 MY), VIN: 2LM********18750
+[13:50:59.817] Found module: OBD2_PCM - On Board Diagnostic II (PCM)
+[13:50:59.972] Found module: PCM - Powertrain Control Module
+[13:51:00.060] Found module: APIM - Accessory Protocol Interface Module
+[13:51:00.588] Found module: BdyCM - Body Control Module
+[13:51:00.627] DTCs in BdyCM: B115E:55-0A
+[13:51:00.628] Found module: SCCM - Steering Column Control Module
+[13:51:00.659] Found module: IPC - Instrument Panel Control Module
+[13:51:00.795] Found module: HVAC - Heating Ventilation Air Conditioning
+[13:51:00.941] Found module: DSM - Driver's Seat Module
+[13:51:00.971] DTCs in DSM: B2312-60, B2316-60
+[13:51:34.664] Disconnected
