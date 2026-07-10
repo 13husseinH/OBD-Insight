@@ -6,6 +6,7 @@ import re
 DTC_PATTERN = re.compile(r"\b([BPCU][0-3][0-9A-F]{3}(?::[0-9A-F]{2})?(?:-[0-9A-F]{2})?)\b", re.IGNORECASE)
 HEADING_PATTERN = re.compile(r"^=+\s*([A-Za-z0-9]+)\s+DTC\s+(.+?)\s*=+$", re.IGNORECASE)
 DTC_LOG_PATTERN = re.compile(r"\bDTCs\s+in\s+([A-Za-z0-9_]+)\s*:\s*(.+)", re.IGNORECASE)
+FOUND_MODULE_PATTERN = re.compile(r"\bFound\s+module\s*:\s*([A-Za-z0-9_]+)\s*-\s*(.+)", re.IGNORECASE)
 MODULE_LINE_PATTERN = re.compile(r"^(?:Module\s*:\s*)?([A-Za-z][A-Za-z0-9]{1,8})\b.*?\b([BPCU][0-3][0-9A-F]{3}(?::[0-9A-F]{2})?(?:-[0-9A-F]{2})?)\b", re.IGNORECASE)
 TIMESTAMP_PATTERN = re.compile(r"^[^\[]*\[\d{2}:\d{2}:\d{2}\.\d{3}\]\s*")
 
@@ -34,6 +35,43 @@ def parse_vehicle_info(text):
         info["vehicle"] = re.split(r",\s*VIN\s*:", vehicle, maxsplit=1, flags=re.IGNORECASE)[0].strip()
 
     return info
+
+
+def parse_modules(text):
+    """Return every module FORScan reports during the scan."""
+    modules = []
+    seen = set()
+
+    for raw_line in text.splitlines():
+        line = _clean_log_line(raw_line)
+        module_match = FOUND_MODULE_PATTERN.search(line)
+        if not module_match:
+            continue
+
+        module_id = module_match.group(1)
+        module_name = module_match.group(2).strip()
+        if module_id in seen:
+            continue
+
+        seen.add(module_id)
+        modules.append(
+            {
+                "id": module_id,
+                "name": module_name,
+                "raw_line": line,
+            }
+        )
+
+    return modules
+
+
+def parse_scan_session(text):
+    """Parse one temporary scan session from FORScan text."""
+    return {
+        "vehicle": parse_vehicle_info(text),
+        "modules": parse_modules(text),
+        "dtcs": parse_dtcs(text),
+    }
 
 
 def parse_dtcs(text):

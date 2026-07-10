@@ -1,46 +1,34 @@
 """Terminal entry point for the OBD-Insight V1 prototype."""
 
-import json
 from pathlib import Path
 
-from parser import parse_dtcs, parse_vehicle_info
+from parser import parse_scan_session
 from severity import classify_severity
 
 
 BASE_DIR = Path(__file__).resolve().parent
-PROJECT_DIR = BASE_DIR.parent
 SAMPLE_SCAN_PATH = BASE_DIR / "sample_scan.txt"
-CODES_PATH = PROJECT_DIR / "data" / "codes.json"
 
 
 def main():
     scan_text = SAMPLE_SCAN_PATH.read_text(encoding="utf-8")
-    codes_db = load_codes()
-
-    vehicle_info = parse_vehicle_info(scan_text)
-    dtcs = parse_dtcs(scan_text)
+    session = parse_scan_session(scan_text)
 
     results = []
-    for dtc in dtcs:
+    for dtc in session["dtcs"]:
         severity = classify_severity(
             dtc["module"],
             dtc["code"],
             raw_line=dtc["raw_line"],
-            codes_db=codes_db,
         )
         results.append({**dtc, "severity": severity})
 
-    print_summary(vehicle_info, results)
+    print_summary(session, results)
 
 
-def load_codes():
-    if not CODES_PATH.exists():
-        return {}
-    with CODES_PATH.open("r", encoding="utf-8") as file:
-        return json.load(file)
-
-
-def print_summary(vehicle_info, results):
+def print_summary(session, results):
+    vehicle_info = session["vehicle"]
+    modules = session["modules"]
     counts = {
         "Critical": 0,
         "Warning": 0,
@@ -54,6 +42,10 @@ def print_summary(vehicle_info, results):
     print(format_vehicle(vehicle_info))
     if vehicle_info.get("vin"):
         print(f"VIN: {vehicle_info['vin']}")
+
+    print()
+    print("Modules Found:")
+    print(len(modules))
 
     print()
     print("Scan Summary:")
