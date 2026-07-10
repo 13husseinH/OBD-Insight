@@ -67,10 +67,13 @@ def parse_modules(text):
 
 def parse_scan_session(text):
     """Parse one temporary scan session from FORScan text."""
+    modules = parse_modules(text)
+    dtcs = _attach_module_names(parse_dtcs(text), modules)
+
     return {
         "vehicle": parse_vehicle_info(text),
-        "modules": parse_modules(text),
-        "dtcs": parse_dtcs(text),
+        "modules": modules,
+        "dtcs": dtcs,
     }
 
 
@@ -159,6 +162,18 @@ def _add_dtc(dtcs, seen, module, code, raw_line):
 
 def _code_base(code):
     return re.split(r"[:-]", code, maxsplit=1)[0]
+
+
+def _attach_module_names(dtcs, modules):
+    module_names = {module["id"]: module["name"] for module in modules}
+
+    return [
+        {
+            **dtc,
+            "module_name": module_names.get(dtc["module"]),
+        }
+        for dtc in dtcs
+    ]
 
 
 def _clean_log_line(line):

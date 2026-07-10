@@ -61,10 +61,12 @@ def print_summary(session, results):
         return
 
     module_width = max(len(result["module"]) for result in results)
+    module_name_width = max(len(result.get("module_name") or "Unknown module") for result in results)
     for result in results:
         severity = result["severity"].upper()
         module = result["module"].ljust(module_width)
-        print(f"{severity:<13} | {module} | {result['code']}")
+        module_name = (result.get("module_name") or "Unknown module").ljust(module_name_width)
+        print(f"{severity:<13} | {module} | {module_name} | {result['code']}")
 
 
 def format_vehicle(vehicle_info):
