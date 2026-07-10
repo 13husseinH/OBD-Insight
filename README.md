@@ -92,11 +92,12 @@ Raw scan results are automatically organized into color-coded priorities, helpin
 
 Each fault card can be expanded using **Add Details** to display additional diagnostic information, common causes, and vehicle-specific context. Users can also select **Ask AI** to ask follow-up questions about a specific fault using the current scan results and previously stored vehicle history as context.
 
-## What V1 Does
+## Current Prototype
 
-* Reads `src/sample_scan.txt`
+* Reads FORScan Log tab text from a file
 * Extracts basic vehicle information when available
-* Detects FORScan-style DTC entries
+* Detects `Found module:` lines
+* Detects `DTCs in MODULE:` lines
 * Extracts module names and DTC codes
 * Classifies each DTC as Critical, Warning, or Informational
 * Prints a clean terminal summary
@@ -104,16 +105,27 @@ Each fault card can be expanded using **Add Details** to display additional diag
 
 ## Run It
 
+Use the sample FORScan log:
+
 ```bash
 python src/main.py
+```
+
+Or pass your own FORScan Log text file:
+
+```bash
+python src/main.py path/to/forscan_log.txt
 ```
 
 ## Example Output
 
 ```text
 Vehicle:
-2012 Lincoln MKX TiVCT 3.7L
-VIN: 2LMDJ8JK0CBL00000
+Lincoln MKX TiVCT 3.7L 2012 (2012 MY)
+VIN: 2LM********18750
+
+Modules Found:
+8
 
 Scan Summary:
 3 DTCs found
@@ -122,9 +134,9 @@ Scan Summary:
 0 Informational
 
 Results:
-WARNING       | BdyCM | B115E:55-0A
-WARNING       | DSM   | B2312-60
-WARNING       | DSM   | B2316-60
+WARNING       | BdyCM | Body Control Module  | B115E:55-0A
+WARNING       | DSM   | Driver's Seat Module | B2312-60
+WARNING       | DSM   | Driver's Seat Module | B2316-60
 ```
 
 ## Severity Rules
@@ -134,5 +146,3 @@ V1 uses simple rules:
 * Critical: engine misfire, ABS/brake, airbag/SRS, transmission, or severe powertrain-related issues
 * Warning: body, driver seat, comfort, sensor, or other non-critical module codes
 * Informational: stored, historical, intermittent, previously cleared, or not-present codes
-
-Known starter codes live in `data/codes.json`.
