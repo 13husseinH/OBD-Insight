@@ -38,9 +38,7 @@ its own basic severity rules.
 
 ## Current App Screenshot
 
-
-
-_Screenshot coming soon._
+<img width="1918" height="1123" alt="image" src="https://github.com/user-attachments/assets/76b15fd8-fc30-4c54-ac09-7206c790d809" />
 
 ## Core Features
 
