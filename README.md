@@ -94,18 +94,30 @@ Each fault card can be expanded using **Add Details** to display additional diag
 
 ## Current Prototype
 
-* Reads FORScan Log tab text from a file
+* Pastes FORScan Log tab text from the Windows clipboard
+* Opens saved FORScan `.txt` or `.log` files
+* Shows scan results in a Windows application window
 * Extracts basic vehicle information when available
 * Detects `Found module:` lines
 * Detects `DTCs in MODULE:` lines
 * Extracts module names and DTC codes
 * Classifies each DTC as Critical, Warning, or Informational
-* Prints a clean terminal summary
+* Keeps the terminal summary available for development
 
 
 ## Run It
 
-Use the sample FORScan log:
+With the virtual environment active, open the Windows application:
+
+```bash
+python src/app.py
+```
+
+In FORScan, copy the Log tab. In OBD-Insight, click **Paste from Clipboard**, then
+click **Analyze Scan**. You can also choose **Open Log File** and select a saved
+FORScan text file.
+
+The original terminal version remains available. Use the sample FORScan log:
 
 ```bash
 python src/main.py

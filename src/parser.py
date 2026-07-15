@@ -9,6 +9,21 @@ DTC_LOG_PATTERN = re.compile(r"\bDTCs\s+in\s+([A-Za-z0-9_]+)\s*:\s*(.+)", re.IGN
 FOUND_MODULE_PATTERN = re.compile(r"\bFound\s+module\s*:\s*([A-Za-z0-9_]+)\s*-\s*(.+)", re.IGNORECASE)
 MODULE_LINE_PATTERN = re.compile(r"^(?:Module\s*:\s*)?([A-Za-z][A-Za-z0-9]{1,8})\b.*?\b([BPCU][0-3][0-9A-F]{3}(?::[0-9A-F]{2})?(?:-[0-9A-F]{2})?)\b", re.IGNORECASE)
 TIMESTAMP_PATTERN = re.compile(r"^[^\[]*\[\d{2}:\d{2}:\d{2}\.\d{3}\]\s*")
+LOG_ENTRY_BOUNDARY_PATTERN = re.compile(
+    r"[ \t]+(?=\((?:OK|WARN|ERROR|ERR|INFO)\)\s*\[\d{2}:\d{2}:\d{2}\.\d{3}\])",
+    re.IGNORECASE,
+)
+
+
+def normalize_scan_text(text):
+    """Normalize text copied from FORScan without changing diagnostic content."""
+    normalized = (text or "").lstrip("\ufeff")
+    normalized = normalized.replace("\r\n", "\n").replace("\r", "\n")
+
+    # Some clipboard sources collapse all FORScan entries onto one line.
+    normalized = LOG_ENTRY_BOUNDARY_PATTERN.sub("\n", normalized)
+
+    return "\n".join(line.rstrip() for line in normalized.splitlines())
 
 
 def parse_vehicle_info(text):
@@ -67,6 +82,7 @@ def parse_modules(text):
 
 def parse_scan_session(text):
     """Parse one temporary scan session from FORScan text."""
+    text = normalize_scan_text(text)
     modules = parse_modules(text)
     dtcs = _attach_module_names(parse_dtcs(text), modules)
 

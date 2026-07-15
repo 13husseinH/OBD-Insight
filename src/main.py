@@ -3,8 +3,7 @@
 import sys
 from pathlib import Path
 
-from parser import parse_scan_session
-from severity import classify_severity
+from analysis import analyze_scan_text
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -14,18 +13,8 @@ SAMPLE_SCAN_PATH = BASE_DIR / "sample_scan.txt"
 def main():
     scan_log_path = get_scan_log_path(sys.argv)
     scan_text = scan_log_path.read_text(encoding="utf-8")
-    session = parse_scan_session(scan_text)
-
-    results = []
-    for dtc in session["dtcs"]:
-        severity = classify_severity(
-            dtc["module"],
-            dtc["code"],
-            raw_line=dtc["raw_line"],
-        )
-        results.append({**dtc, "severity": severity})
-
-    print_summary(session, results)
+    analysis = analyze_scan_text(scan_text)
+    print_summary(analysis, analysis["results"])
 
 
 def get_scan_log_path(args):
