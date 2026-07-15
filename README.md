@@ -21,6 +21,7 @@ diagnosing the vehicle.
 
 ## Final Product Vision
 
+<img width="1672" height="941" alt="OBD-Insight final product vision" src="https://github.com/user-attachments/assets/c4be30f8-bf5a-4c85-98fe-88f5e84e3914" />
 
 ## Current Version
 
