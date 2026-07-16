@@ -81,6 +81,22 @@ Or pass your own FORScan Log text file:
 python src/main.py path/to/forscan_log.txt
 ```
 
+## Priority System
+
+### 🔴 Critical
+
+Issues that may affect vehicle safety, drivability, braking, airbags, engine
+performance, transmission behavior, or cause further damage.
+
+### 🟡 Warning
+
+Issues that should be diagnosed soon but may not require immediate action.
+
+### ⚪ Informational
+
+Stored, historical, intermittent, or low-priority codes that can be monitored
+over time.
+
 ## Severity Rules
 
 The current version uses simple starting rules:
